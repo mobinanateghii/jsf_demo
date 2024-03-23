@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:form="http://www.springframework.org/tags/form">
+
+<h:head>
+    <title>Database Test</title>
+
+    <style type="text/css">
+        .error {
+            color: red
+        }
+    </style>
+    <!--should add css file in webapp/resources folder-->
+    <h:outputStylesheet library="css" name="sample.css"/>
+</h:head>
+
+<h:body>
+    <h1>Update student</h1>
+    <hr/>
+
+    <!--Attention-->
+    <!--when we set temp var to `tempStudent` evrything is okey but if you change it to `student`,
+        on update button evrything will be crash beacuse on update we call bean student and its same name so we faced to problem-->
+    <!--here should as same name as bean Name beacuse it call setter method on bean that have bean full filed on getStudent(...) method-->
+    <h:form>
+        <h:inputHidden value="#{student.id}"/>
+
+        <h:outputLabel value="firstName" style="margin: 1em"/>
+        <h:inputText id="firstName" value="#{student.firstName}" a:placeholder="joun" style="width:30em; margin: 1em" required="true"/>
+        <br/>
+        <h:outputLabel value="lastName" style="margin: 1em"/>
+        <h:inputText id="lastName" value="#{student.lastName}" a:placeholder="Doee" rendered="true" label="lastName" style="width:30em; margin: 1em" required="true"/>
+        <br/>
+        <h:outputLabel value="email" style="margin: 1em"/>
+        <h:inputText value="#{student.email}" id="email" required="true" label="email Address" requiredMessage="آدرس ایمیل الزامی است." style="width:30em; margin: 1em"/>
+        <h:message for="email" styleClass="error"/>
+        <br/>
+
+        <h:commandButton value="Submit" action="#{dBController.updateStudent(student, 'sample-DB.xhtml')}"/>
+    </h:form>
+
+    <h:outputLink value="sample-DB.xhtml">Back to studentList</h:outputLink>
+
+</h:body>
+</html>

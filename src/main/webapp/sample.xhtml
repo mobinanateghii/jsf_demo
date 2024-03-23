@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:form="http://www.springframework.org/tags/form">
+
+<h:head>
+    <title>sample Codes</title>
+
+    <style type="text/css">
+        .error {
+            color: red
+        }
+    </style>
+    <!--should add css file in webapp/resources folder-->
+    <h:outputStylesheet library="css" name="sample.css"/>
+</h:head>
+<h:body>
+    <h:form>
+        <!--to show error message per filed we have to remove it-->
+        <!--        <h:messages styleClass="error"/>-->
+
+        <!--when we call sampleBean.firstName its automatically call setFirstName in managedBean!-->
+        <h:outputLabel value="firstName" style="margin: 1em"/>
+        <h:inputText id="firstName" value="#{sampleBean.firstName}" a:placeholder="joun" style="width:30em; margin: 1em" required="true"/>
+        <br/>
+        <h:outputLabel value="lastName" style="margin: 1em"/>
+        <h:inputText id="lastName" value="#{sampleBean.lastName}" a:placeholder="Doee" rendered="true" label="lastName" style="width:30em; margin: 1em" required="true"/>
+        <br/>
+
+        <h:outputLabel value="phoneNumber" style="margin: 1em"/>
+        <h:inputText id="phoneNumber" value="#{sampleBean.phoneNumber}" rendered="true" label="phone Number" validatorMessage="شماره تلفن معتبر نمیباشد!" style="width:30em; margin: 1em" required="true">
+            <f:validateRegex pattern="^(\+98|0)?9\d{9}$" for="phoneNumber"/>
+        </h:inputText>
+        <h:message for="phoneNumber" styleClass="error"/>
+        <br/>
+
+        <h:outputLabel value="postalCode" style="margin: 1em"/>
+        <h:inputText id="postalCode" value="#{sampleBean.postalCode}" label="postal code" style="width:30em; margin: 1em">
+            <!--            <f:validateLongRange minimum="13" maximum="13" for="postalCode"/>-->
+        </h:inputText>
+        <!--        <h:message for="postalCode" styleClass="error"/>-->
+        <br/>
+
+        <h:outputLabel value="customCode" style="margin: 1em"/>
+        <h:inputText id="customCode" value="#{sampleBean.customCode}" label="custom Code" style="width:30em; margin: 1em" required="true" validator="#{sampleBean.validateCustomCode}"/>
+        <h:message for="customCode" styleClass="error"/>
+        <br/>
+
+        <!--LabelName for validationError Message.-->
+        <!--we can custom validation error message on filed-->
+        <h:outputLabel value="email" style="margin: 1em"/>
+        <h:inputText value="#{sampleBean.email}" id="email" required="true" label="email Address" requiredMessage="آدرس ایمیل الزامی است." style="width:30em; margin: 1em"/>
+        <h:message for="email" styleClass="error"/>
+        <br/>
+
+        <h:outputLabel value="country" style="margin: 1em"/>
+        <h:selectOneMenu value="#{sampleBean.country}" style="margin: 1em">
+            <f:selectItems value="#{sampleBean.countryOptions}"/>
+            <!--            NOTE::: STAIC Set-->
+            <!--            <f:selectItem itemLabel="Iran" itemValue="Iran" />-->
+            <!--            <f:selectItem itemLabel="London" itemValue="London"/>-->
+        </h:selectOneMenu>
+        <br/>
+
+        <h:outputLabel value="nativeLanguage" style="margin: 1em"/>
+        <h:selectOneRadio value="#{sampleBean.nativeLanguage}" style="margin: 1em">
+            <f:selectItems value="#{sampleBean.nativeLanguageOptions}"/>
+        </h:selectOneRadio>
+
+        <h:outputLabel value="favorite hobby" style="margin: 1em"/>
+        <h:selectManyCheckbox value="#{sampleBean.favoriteHobbies}" style="margin: 1em">
+            <f:selectItems value="#{sampleBean.favoriteHobbiesOptions}"/>
+        </h:selectManyCheckbox>
+
+        <h:commandButton value="Submit" action="sample"/>
+    </h:form>
+    <br/>
+
+    <!--when we call sampleBean.firstName its automatically call getFirstName in managedBean!-->
+    <c:if test="#{(not empty sampleBean.firstName) and (not empty sampleBean.lastName)}">
+        <h3>fullName is: #{sampleBean.firstName} #{sampleBean.lastName}</h3>
+        <h3>country is: #{sampleBean.country}</h3>
+        <h3>nativeLanguage is: #{sampleBean.nativeLanguage}</h3>
+
+        <h3>favorite hobby is:</h3>
+        <ul>
+            <ui:repeat value="#{sampleBean.favoriteHobbies}" var="favoriteHobby">
+                <li>#{favoriteHobby}</li>
+            </ui:repeat>
+        </ul>
+    </c:if>
+    <br/>
+    <hr/>
+
+
+    <h:form>
+        <h3>application counter is: #{applicationBean.counter}</h3>
+        <h:commandButton value="increament" action="#{applicationBean.increment()}"/>
+    </h:form>
+    <br/>
+    <hr/>
+
+    <h:form>
+        <h:outputLabel value="samplePage" style="margin: 1em"/>
+        <h:selectOneMenu value="#{sampleBean.samplePage}" style="margin: 1em">
+            <f:selectItem itemLabel="pure-jsf" itemValue="pure-jsf"/>
+            <f:selectItem itemLabel="prime-jsf" itemValue="prime-jsf"/>
+        </h:selectOneMenu>
+        <br/>
+        <br/>
+        <h:commandButton value="Submit" action="#{sampleBean.conditionalNavigation()}"/>
+    </h:form>
+    <br/>
+    <hr/>
+
+    <ul>
+        <ui:repeat value="#{applicationBean.studentList}" var="student">
+            <li>#{student.firstName}  #{student.lastName} #{student.email}</li>
+        </ui:repeat>
+    </ul>
+    <br/>
+    <h3>Demo Table Data</h3>
+    <h:dataTable value="#{applicationBean.studentList}" var="student" border="5" styleClass="demo-table" headerClass="demo-table-header" rowClasses="demo-table-odd-row,demo-table-even-row">
+        <h:column>
+            <f:facet name="header">firstName</f:facet>
+            #{student.firstName}
+        </h:column>
+        <h:column>
+            <f:facet name="header">lastName</f:facet>
+            #{student.lastName}
+        </h:column>
+        <h:column>
+            <f:facet name="header">email</f:facet>
+            #{student.email}
+        </h:column>
+    </h:dataTable>
+    <br/>
+    <hr/>
+
+    <p:button target="_blank" href="/sample-DB.xhtml" value="show Student list from Db" />
+    <br/>
+    <hr/>
+
+
+
+
+
+
+
+
+</h:body>
+</html>

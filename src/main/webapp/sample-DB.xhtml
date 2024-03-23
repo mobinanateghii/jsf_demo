@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:form="http://www.springframework.org/tags/form">
+
+<h:head>
+    <title>Database Test</title>
+
+    <style type="text/css">
+        .error {
+            color: red
+        }
+    </style>
+    <!--should add css file in webapp/resources folder-->
+    <h:outputStylesheet library="css" name="sample.css"/>
+</h:head>
+
+<f:metadata>
+    <!--its means that this DB request render once when page is loading-->
+    <!--havy lifting-->
+    <f:event listener="#{dBController.loadStudents()}" type="preRenderView"/>
+</f:metadata>
+<h:body>
+    <h1>Database Test</h1>
+    <hr/>
+
+    <div id="container">
+        <div id="content">
+            <!--this means if there is any exceptions displayed here-->
+            <h:messages globalOnly="true"/>
+
+            <!--sample-DB-addStudent is name of file that we want to link to it!-->
+            <h:button value="add Strudent" outcome="sample-DB-addStudent"/>
+            <br/>
+
+            <!--Attention-->
+            <!--when we set temp var to `tempStudent` evrything is okey but if you change it to `student`,
+                on update button evrything will be crash beacuse on update we call bean student and its same name so we faced to problem-->
+            <h:form>
+                <h:dataTable value="#{dBController.studentList}" var="tempStudent" border="5" styleClass="demo-table" headerClass="demo-table-header" rowClasses="demo-table-odd-row,demo-table-even-row">
+                    <h:column>
+                        <f:facet name="header">id</f:facet>
+                        #{tempStudent.id}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">firstName</f:facet>
+                        #{tempStudent.firstName}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">lastName</f:facet>
+                        #{tempStudent.lastName}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">email</f:facet>
+                        #{tempStudent.email}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">action</f:facet>
+
+                        <h:commandLink value="update" action="#{dBController.loadStudent(tempStudent.id, 'sample-DB-updateStudent.xhtml')}"/>
+                        <br/>
+                        <hr/>
+                        <h:commandLink value="delete" onclick="if (!confirm('Are you sure?')) return false" action="#{dBController.deleteStudent(tempStudent.id)}"/>
+                    </h:column>
+                </h:dataTable>
+            </h:form>
+        </div>
+    </div>
+
+    <!--light lifting-->
+    <p>#{dBController.studentList}</p>
+
+</h:body>
+</html>
